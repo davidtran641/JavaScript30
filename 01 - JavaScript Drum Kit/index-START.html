@@ -56,8 +56,76 @@
   <audio data-key="74" src="sounds/snare.wav"></audio>
   <audio data-key="75" src="sounds/tom.wav"></audio>
   <audio data-key="76" src="sounds/tink.wav"></audio>
+  <div class="audio-container">
+
+  </div>
 
 <script>
+  const audioContainer = document.querySelector('.audio-container')
+  function play(item) {
+    if (!item) {
+      return;
+    }
+    const keyCode = item.dataset.key;
+    playAudio(keyCode)
+    item.classList.add('playing');
+  }
+
+  function playAudio(keyCode) {
+    // Find audio element that has data-key = keyCode
+    const audios = document.querySelectorAll(`audio[data-key="${keyCode}"]`);
+    if(!audios || audios.length == 0) {
+      return;
+    }
+    
+    // Try to play any audio if it's currently paused
+    let found = false
+    for (const audio in audios) {
+      if (audio.paused) {
+        audio.currentTime = 0;
+        audio.play();
+        found = true;
+        break;
+      }
+    }
+
+    // If all are playing, clone a new node
+    if (!found) {
+      const audio = audios[0].cloneNode(true);
+      audio.currentTime = 0;
+      audio.play();
+    }
+  }
+
+  function end(item) {
+    if (item) {
+      item.classList.remove('playing');
+    }
+  }
+
+  function findItem(keyCode) {
+    // Find element that its class is key & data-key = keyCode
+    return document.querySelector(`.key[data-key="${keyCode}"]`)
+  }
+
+  // Handle key down
+  window.addEventListener('keydown', function(e){
+    console.log(`Click "${e.keyCode}"`);
+    const item = findItem(e.keyCode)
+    play(item)
+  });
+
+  // Handle key up
+  window.addEventListener('keyup', function(e){
+    console.log(`Key up "${e.keyCode}"`);
+    const item = findItem(e.keyCode)
+    end(item)
+  });
+
+  // Find all items & handle mousedown and mouseup event
+  const items = document.querySelectorAll('.key')
+  items.forEach((item) => item.addEventListener('mousedown', function() {play(this)}))
+  items.forEach((item) => item.addEventListener('mouseup', function() {end(this)}))
 
 </script>
 
