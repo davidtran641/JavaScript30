@@ -62,11 +62,33 @@
       background: black;
       position: absolute;
       top: 50%;
+      transform-origin: 100%;
     }
 
   </style>
 
   <script>
+
+  const secondHand = document.querySelector('.second-hand');
+  const minsHand = document.querySelector('.min-hand');
+  const hourHand = document.querySelector('.hour-hand');
+
+  function setDate() {
+    const now = new Date();
+    const second = now.getSeconds();
+    const secondsDegrees = (second / 60.0 * 360) + 90;
+    secondHand.style.transform = `rotate(${secondsDegrees}deg)`;
+
+    const mins = now.getMinutes();
+    const minsDegrees = (mins / 60.0 * 360) + (second / 60.0 * 360/60) + 90;
+    minsHand.style.transform = `rotate(${minsDegrees}deg)`;
+
+    const hours = now.getHours();
+    const hourDegrees = (hours / 12.0 * 360) + (mins / 60.0 * 360/12) + 90; 
+    hourHand.style.transform = `rotate(${hourDegrees}deg)`;
+  }
+
+  setInterval(setDate, 10);
 
 
   </script>
